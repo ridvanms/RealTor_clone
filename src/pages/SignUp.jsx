@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai"
 import { Link } from 'react-router-dom';
 import OAuth from '../components/OAuth';
+import {updateProfile, createUserWithEmailAndPassword, getAuth } from "firebase/auth"
+// import { db } from "../firebase"
+import { serverTimestamp } from 'firebase/firestore';
+import { getDatabase, ref, set } from "firebase/database";
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,12 +16,42 @@ export default function SignUp() {
     email: '',
     password: '',
   });
-  const {name, email, password } = formData;
+  const { name, email, password } = formData;
+  const navigate = useNavigate();
   function onChange(e) {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  }
+  async function onSubmit(e) {
+    e.preventDefault();
+    if (name === "" || email === "" || password === "")
+      return toast('Please fill out all fields!');
+    try {
+      const auth = getAuth()
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      updateProfile(auth.currentUser, { displayName: name })
+      
+      const user = userCredential.user
+      const formDataCopy = { ...formData }
+      delete formDataCopy.password
+      formDataCopy.timestamp = serverTimestamp();
+
+      // await setDoc(doc(db, "users", user.uid), formDataCopy);
+      
+      const db = getDatabase();
+      set(ref(db, 'users/' + user.uid), {
+        username: formDataCopy.name,
+        email: formDataCopy.email,
+        // profile_picture : imageUrl
+        timestamp: serverTimestamp(),
+      })
+      // navigate("/")
+      // toast.success("Successfully sign up!")
+    } catch (error) {
+      toast.error("Something went wrong with registration!")
+    }
   }
   return (
     <section>
@@ -29,7 +65,7 @@ export default function SignUp() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-          <form>
+          <form onSubmit={onSubmit}>
             
             <input
               type="text"
