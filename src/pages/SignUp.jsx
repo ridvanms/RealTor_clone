@@ -3,7 +3,7 @@ import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai"
 import { Link } from 'react-router-dom';
 import OAuth from '../components/OAuth';
 import {updateProfile, createUserWithEmailAndPassword, getAuth } from "firebase/auth"
-// import { db } from "../firebase"
+import { db } from "../firebase"
 import { serverTimestamp } from 'firebase/firestore';
 import { getDatabase, ref, set } from "firebase/database";
 import { useNavigate } from 'react-router-dom';
@@ -47,10 +47,14 @@ export default function SignUp() {
         // profile_picture : imageUrl
         timestamp: serverTimestamp(),
       })
-      // navigate("/")
-      // toast.success("Successfully sign up!")
+      navigate("/")
+      toast.success("Successfully sign up!")
     } catch (error) {
-      toast.error("Something went wrong with registration!")
+      if (error.message == "Firebase: Error (auth/email-already-in-use).") {
+        toast.error("This account is already in use!")
+      }
+      else return toast.error("Something went wrong with registration!")
+      
     }
   }
   return (
