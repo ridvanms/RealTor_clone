@@ -4,10 +4,11 @@ import { FcGoogle } from "react-icons/fc";
 import { toast } from 'react-toastify';
 import { getDatabase, ref, set } from 'firebase/database';
 import { serverTimestamp } from 'firebase/firestore';
+import { useNavigate } from 'react-router';
 
 export default function OAuth() {
   const db = getDatabase();
-
+  const navigate = useNavigate();
   async function onGoogleClick() {
     try {
       const auth = getAuth();
@@ -20,7 +21,7 @@ export default function OAuth() {
         email: user.email,
         timestamp: serverTimestamp(),
       });
-      
+      navigate("/")
     } catch (error) {
       console.log('Error :', error.message);
       toast.error("Could not authorize with Google")

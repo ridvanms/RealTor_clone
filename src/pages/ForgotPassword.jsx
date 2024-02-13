@@ -3,10 +3,12 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import OAuth from '../components/OAuth'
-
+import { toast } from "react-toastify"
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
 // ForgotPassword component
 export default function ForgotPossword() {
-
+  const navigate = useNavigate();
   // Declaring a state variable 'email' and its setter function 'setEmail'
   const [email, setEmail] = useState("")
 
@@ -14,7 +16,17 @@ export default function ForgotPossword() {
   function onChange(e) {
     setEmail(e.target.value)
   }
-
+  async function onSubmit(e) {
+    e.preventDefault();
+    try {
+      const auth = getAuth()
+      await sendPasswordResetEmail(auth, email)
+      toast.success("Email was sent successfully")
+      navigate("/sign-in")
+    } catch (error) {
+      toast.error("Could not send reset password!")
+    }
+  }
   // JSX code for the ForgotPassword component
   return (
     <section>
@@ -34,7 +46,7 @@ export default function ForgotPossword() {
         {/* Form container */}
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
           {/* Form */}
-          <form>
+          <form onSubmit={onSubmit}>
             {/* Email input field */}
             <input
               type="email"
