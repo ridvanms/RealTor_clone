@@ -54,7 +54,6 @@ export default function SignUp() {
         toast.error("This account is already in use!")
       }
       else return toast.error("Something went wrong with registration!")
-      
     }
   }
   return (
@@ -126,3 +125,4 @@ export default function SignUp() {
     </section>
   );
 }
+ 

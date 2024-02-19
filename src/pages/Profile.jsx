@@ -43,7 +43,6 @@ export default function Profile() {
       // return update(ref(db), updates);
 
       update(ref(db, 'users/' + auth.currentUser.uid), {
-        email: auth?.currentUser?.email,
         username:name
       }).then(() => {
         toast.success("Profile details updated!")
