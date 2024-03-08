@@ -16,8 +16,29 @@ export default function CreateListing() {
     })
     const { type, name, bedrooms, bathrooms, parking, furnished, address, Description,
         offer,regularPrice,discountedPrice } = formData;
-    function onChange() {
-      // Do something with the form values
+    function onChange(e) {
+        // Do something with the form values
+        let boolean = null;
+        if (e.target.value === "true") {
+            boolean = true
+        }
+        if (e.target.value === "false") {
+            boolean = false
+        }
+        //Files
+        if (e.target.files) {
+            setFormData((prevState) => ({
+                ...prevState,
+                images: e.target.files
+            }))
+        }
+        //Text/Boolean/Number
+        if (!e.target.files) {
+            setFormData((prevState) => ({
+                ...prevState,
+                [e.target.id]: boolean ?? e.target.value
+            }))
+        }
   }
     return (
     <main className='max-w-md px-2 mx-auto'>
@@ -31,7 +52,7 @@ export default function CreateListing() {
                   active:shadow-lg transition duration-150 ease-in-out w-full ${
                             type == "rent" ? "bg-white text-black" : "bg-slate-600 text-white"
                   }`}>Sell</button>
-                  <button type="button" id="type" value="sale"
+                  <button type="button" id="type" value="rent"
                         onClick={onChange} className={`ml-3 px-7 py-3 font-medium text-sm
                   uppercase shadow-md rounded hover:shadow-lg focuse:shadow-lg
                   active:shadow-lg transition duration-150 ease-in-out w-full ${
