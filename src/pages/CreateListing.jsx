@@ -1,7 +1,12 @@
 import React, { useState } from 'react'
+import Spinner from '../components/Spinner';
+import { toast } from 'react-toastify';
+
 
 export default function CreateListing() {
-    const [geoLocationEnabled, setGeoLocationEnabled] = useState(false)
+    const api_key = process.env.REACT_APP_GEOCODE_API_KEY
+    const [geoLocationEnabled, setGeoLocationEnabled] = useState(true)
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         type: "rent",
         name: "",
@@ -15,10 +20,11 @@ export default function CreateListing() {
         regularPrice:0,
         discountedPrice: 0,
         latitude: 0,
-        longitude:0,
+        longitude: 0,
+        images: {}
     })
     const { type, name, bedrooms, bathrooms, parking, furnished, address, Description,
-        offer,regularPrice,discountedPrice,latitude,longitude } = formData;
+        offer,regularPrice,discountedPrice,latitude,longitude,images } = formData;
     function onChange(e) {
         // Do something with the form values
         let boolean = null;
@@ -42,11 +48,33 @@ export default function CreateListing() {
                 [e.target.id]: boolean ?? e.target.value
             }))
         }
-  }
+    }
+    async function onSubmit(e) {
+        e.preventDefault();
+        setLoading(true)
+        if (discountedPrice >= regularPrice) {
+            setLoading(false);
+            toast.error('Discounted price needs to be less than regular price!')
+        }
+        if (images.length > 6) {
+            setLoading(false)
+            toast.error("Maximum 6 images are allowed!")
+        }
+        let geolocation = {} 
+        let location
+        if (geoLocationEnabled) {
+            const response = await fetch(`https://geocode.maps.co/search?q=${address}&api_key=${api_key}`)
+            const data = await response.json()
+            console.log(data)
+        }
+    }
+    if (loading) {
+        return <Spinner/>
+    }
     return (
     <main className='max-w-md px-2 mx-auto'>
         <h1 className='text-3xl text-center mt-6 font-bold'>Create a listing</h1>
-          <form >
+          <form onSubmit={onSubmit}>
               <p className='text-lg mt-6 font-semibold'>Sell / Rent</p>
               <div className='flex'>
                   <button type="button" id="type" value="sale"
