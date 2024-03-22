@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
 import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
+import { getStorage, ref, uploadBytesResumable,getDownloadURL  } from "firebase/storage";
+import { getAuth } from "firebase/auth"
+import { v4 as uuidv4 } from "uuid" 
 
 
-export default function CreateListing() {
+export default  function CreateListing() {
+    const auth = getAuth();
     const api_key = process.env.REACT_APP_GEOCODE_API_KEY
     const [geoLocationEnabled, setGeoLocationEnabled] = useState(true)
     const [loading, setLoading] = useState(false);
@@ -25,7 +29,7 @@ export default function CreateListing() {
     })
     const { type, name, bedrooms, bathrooms, parking, furnished, address, Description,
         offer,regularPrice,discountedPrice,latitude,longitude,images } = formData;
-    function onChange(e) {
+     function onChange(e) {
         // Do something with the form values
         let boolean = null;
         if (e.target.value === "true") {
@@ -61,13 +65,92 @@ export default function CreateListing() {
             toast.error("Maximum 6 images are allowed!")
         }
         let geolocation = {} 
-        let location
+        let location;
         if (geoLocationEnabled) {
             const response = await fetch(`https://geocode.maps.co/search?q=${address}&api_key=${api_key}`)
             const data = await response.json()
-            console.log(data)
+            // console.log(data)
+            geolocation.lat = data[0]?.lat ?? 0;
+            // console.log(geolocation.lat)
+            geolocation.lng = data[0]?.lon ?? 0;
+
+            location = data[0] === undefined ;
+            // console.log(location)
+            if (location) {
+                setLoading(false)
+                toast.error("Invalid address provided.")
+                return;
+            } 
+        } else {
+            geolocation.lat = latitude;
+            geolocation.lng = longitude;
         }
+        async function storeImage(image) {
+            return new Promise((res, rej) => {
+                const storage = getStorage()
+                const fileName = `${auth.currentUser.uid}-${image.name}-${uuidv4(10)}`
+                const storageRef = ref(storage, fileName);
+
+                const uploadTask = uploadBytesResumable(storageRef, image);
+
+                uploadTask.on('state_changed', 
+                (snapshot) => {
+                    // Observe state change events such as progress, pause, and resume
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        console.log('Upload is running');
+                        break;
+                    }
+                }, 
+                (error) => {
+                    // A full list of error codes is available at
+                    // https://firebase.google.com/docs/storage/web/handle-errors
+                    switch (error.code) {
+                    case 'storage/unauthorized':
+                            // User doesn't have permission to access the object
+                            toast.error("User doesn't have permissions!")
+                            break;
+                    case 'storage/canceled':
+                            // User canceled the upload
+                            toast.error("User canceld the upload!")
+                            break;
+
+                    // ...
+
+                    case 'storage/unknown':
+                        // Unknown error occurred, inspect error.serverResponse
+                        toast.error("Unknown error occurred!")
+                            break;
+                    }
+                },  
+                () => {
+                    // Handle successful uploads on complete
+                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        res(downloadURL)
+                        setLoading(false)
+                    });
+                }
+                );
+            })
+        }
+        const imgUrls = await Promise.all(
+            [...images].map((image) => storeImage(image)))
+                .catch((error) => {
+                    setLoading(false)
+                    toast.error("Image not uploaded")
+                    return;
+            })
+        console.log(imgUrls)
     }
+
+
     if (loading) {
         return <Spinner/>
     }
