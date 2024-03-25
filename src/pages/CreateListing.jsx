@@ -154,19 +154,23 @@ export default function CreateListing() {
             ...formData,
             imgUrls,
             geolocation,
+            ownerID: auth.currentUser.uid,
             timestamp: serverTimestamp()
         }
         delete formDataCopy.images;
-        !formDataCopy.offer &&  delete formDataCopy.discountedPrice;
-        console.log(formDataCopy)
+        !formDataCopy.offer && delete formDataCopy.discountedPrice;
+        delete formDataCopy.longitude
+        delete formDataCopy.latitude
+        // console.log(formDataCopy)
         
         const db = getDatabase()
-        set(databaseRef(db, 'ads/' + formDataCopy.name), {
+        const adID = uuidv4(6);
+        set(databaseRef(db, 'ads/' + adID), {
             ...formDataCopy
         });   
         setLoading(false)
-        nav('/')
-        toast.success("Ad added successfully!")
+        nav(`/category/${formDataCopy.type}/${adID}`)
+        toast.success("Ad created!")
     }
 
 
