@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
-import { getStorage, ref, uploadBytesResumable,getDownloadURL  } from "firebase/storage";
+import { getStorage,ref, uploadBytesResumable,getDownloadURL  } from "firebase/storage";
 import { getAuth } from "firebase/auth"
 import { v4 as uuidv4 } from "uuid" 
-
-
-export default  function CreateListing() {
+import { serverTimestamp } from "firebase/firestore"
+import { getDatabase, ref as databaseRef ,set  } from "firebase/database"
+import { Navigate, useNavigate } from 'react-router';
+export default function CreateListing() {
+    const nav = useNavigate()
     const auth = getAuth();
     const api_key = process.env.REACT_APP_GEOCODE_API_KEY
     const [geoLocationEnabled, setGeoLocationEnabled] = useState(true)
@@ -145,9 +147,26 @@ export default  function CreateListing() {
                 .catch((error) => {
                     setLoading(false)
                     toast.error("Image not uploaded")
-                    return;
-            })
+                    return ;
+                })
         console.log(imgUrls)
+        const formDataCopy = { 
+            ...formData,
+            imgUrls,
+            geolocation,
+            timestamp: serverTimestamp()
+        }
+        delete formDataCopy.images;
+        !formDataCopy.offer &&  delete formDataCopy.discountedPrice;
+        console.log(formDataCopy)
+        
+        const db = getDatabase()
+        set(databaseRef(db, 'ads/' + formDataCopy.name), {
+            ...formDataCopy
+        });   
+        setLoading(false)
+        nav('/')
+        toast.success("Ad added successfully!")
     }
 
 
