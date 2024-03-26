@@ -1,14 +1,17 @@
 import { getAuth, updateProfile } from 'firebase/auth'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
-import { getDatabase,ref,child,push,update, set } from 'firebase/database';
+import { getDatabase,ref,update,onValue } from 'firebase/database';
 import { FcHome } from "react-icons/fc";
 
 
 export default function Profile() {
   const auth = getAuth()
+  const db = getDatabase();
   const navigate = useNavigate();
+  const [listings, setListings] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [changeDetail, setChangeDetail] = useState(false)
   const [formData, setFormData] = useState({
     name: auth?.currentUser?.displayName,
@@ -31,7 +34,7 @@ export default function Profile() {
         await updateProfile(auth.currentUser,{displayName: name})
       }
       //update name in the realtime database
-      const db = getDatabase();
+      
       // const postData = {
       //   name: name,
       //   email:email
@@ -52,6 +55,28 @@ export default function Profile() {
       toast.error("Could not update the profile detail!")
     }
   }
+  useEffect(() => {
+    if (auth.currentUser) {
+      const adsRef = ref(db, `ads/`);
+      onValue(adsRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const userListings = Object.values(data).filter((value) => {
+            
+            return value.ownerID === auth.currentUser.uid
+          }).sort((a, b) => {
+            return a.timestamp - b.timestamp;
+          })
+          
+          setListings(userListings);
+          setLoading(false);
+        } else {
+          setListings([]);
+          setLoading(false);
+        }
+      })
+    }
+  },[auth.currentUser,db])
   return (
     <>
       <section className='max-w-6xl mx-auto flex justify-center items-center flex-col'>

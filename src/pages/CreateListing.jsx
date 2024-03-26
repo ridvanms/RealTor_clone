@@ -58,7 +58,7 @@ export default function CreateListing() {
     async function onSubmit(e) {
         e.preventDefault();
         setLoading(true)
-        if (discountedPrice >= regularPrice) {
+        if (+discountedPrice >= +regularPrice) {
             setLoading(false);
             toast.error('Discounted price needs to be less than regular price!')
         }
@@ -150,11 +150,13 @@ export default function CreateListing() {
                     return ;
                 })
         console.log(imgUrls)
+        const adID = uuidv4(6);
         const formDataCopy = { 
             ...formData,
             imgUrls,
             geolocation,
             ownerID: auth.currentUser.uid,
+            id: adID,
             timestamp: serverTimestamp()
         }
         delete formDataCopy.images;
@@ -164,7 +166,6 @@ export default function CreateListing() {
         // console.log(formDataCopy)
         
         const db = getDatabase()
-        const adID = uuidv4(6);
         set(databaseRef(db, 'ads/' + adID), {
             ...formDataCopy
         });   
