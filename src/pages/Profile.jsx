@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import { getDatabase,ref,update,onValue } from 'firebase/database';
 import { FcHome } from "react-icons/fc";
+import ListingItem from '../components/ListingItem';
 
 
 export default function Profile() {
@@ -127,6 +128,22 @@ export default function Profile() {
           </button>
         </div>
       </section>
+      <div className="max-w-6xl px-3 mt-6 mx-auto ">
+        {!loading && listings.length > 0 &&  (
+          <>
+            <h2 className='text-2xl text-center font-semibold'>My  Listings</h2>
+            <ul>
+              {listings.map((listing) =>
+                <ListingItem
+                      key={listing.id}
+                      id={listing.id}
+                      listing={listing}
+                />
+              )}
+            </ul>
+          </>
+        )}
+       </div>
     </>
   )
 }
