@@ -1,6 +1,8 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { RiHome2Fill } from "react-icons/ri";
+
 
 export default function Header() {
   const [pageState,setPageState] = useState("Sign In")
@@ -26,9 +28,16 @@ export default function Header() {
   return (
     <div className="bg-white border-b shadow-sm sticky top-0 z-50">
       <header className="flex justify-between items-center px-3 max-w-6xl mx-auto">
-        <div>
-          <img src="https://static.rdc.moveaws.com/images/logos/rdc-logo-default.svg" alt="realTor" className="h-5 cursor-pointer"
-          onClick={()=>navigate('/')}/>
+        <div onClick={() => navigate('/')} className='flex'>
+          {/* <img src="https://static.rdc.moveaws.com/images/logos/rdc-logo-default.svg" alt="realTor" className="h-5 cursor-pointer"
+          
+            onClick={() => navigate('/')} /> */}
+          <RiHome2Fill 
+            className='h-6 text-xl cursor-pointer m-[2px] text-red-600' />
+          <div className="flex cursor-pointer">
+            <h2 className='text-lg font-semibold text-red-600 uppercase'>Realty</h2>  
+            <h2 className='font-mono text-gray-600 lowercase'>Connect</h2> 
+          </div> 
         </div>
         <div>
           <ul className="flex space-x-10">
