@@ -10,9 +10,9 @@ export default function Home() {
         
         <div className=' w-full h-full  flex flex-col items-center justify-evenly'>
           <div className='z-10 p-10'>
-            <h1 className='  z-10 text-black font-extrabold text-2xl sm:text-4xl  
+            <h1 className='  z-10 text-black font-extrabold text-2xl sm:text-4xl  md:text-6xl
               dark:text-stone-200 '>The site for real estate </h1>
-            <h1 className='ml-10 z-10 text-black font-extrabold text-2xl sm:text-4xl 
+            <h1 className='ml-10 z-10 text-black font-extrabold text-2xl sm:text-4xl md:text-6xl
               dark:text-stone-200 '>professionals trust*</h1>
 
           </div>
