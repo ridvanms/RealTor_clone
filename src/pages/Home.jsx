@@ -32,7 +32,7 @@ export default function Home() {
                   focus:ring-gray-500 focus:ring-2  focus:border-gray-500 block w-full pl-5 p-2.5" placeholder="Addres, City" required />
                   <button type="submit" className="absolute inset-y-0 end-0 m-1 p-3  text-sm font-medium text-white bg-gray-600 rounded-3xl border border-gray-500 hover:bg-gray-300 focus:ring-2 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                       <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                       </svg>
                       <span className="sr-only">Search</span>
                   </button>
@@ -46,8 +46,9 @@ export default function Home() {
           
         </div>
       </section> */}
+      
     </>
-    
+      
   )
 }
 {/* <form className=" flex items-center  w-full sm:w-1/2">   
@@ -62,4 +63,5 @@ export default function Home() {
             <span className="sr-only">Search</span>
         </button>
     </div>
-</form> */}
+</form> */}      
+      
