@@ -5,15 +5,15 @@ import { toast } from 'react-toastify';
 import { getDatabase,ref,update,onValue } from 'firebase/database';
 import { FcHome } from "react-icons/fc";
 import ListingItem from '../components/ListingItem';
-
+import useUserListings from '../hooks/useUserListings';
 
 export default function Profile() {
   const auth = getAuth()
   const db = getDatabase();
   const navigate = useNavigate();
-  const [listings, setListings] = useState(null)
-  const [loading, setLoading] = useState(true)
   const [changeDetail, setChangeDetail] = useState(false)
+  const { listings, loading } = useUserListings(db,auth,"ownerID")
+  console.log(listings)
   const [formData, setFormData] = useState({
     name: auth?.currentUser?.displayName,
     email: auth?.currentUser?.email,
@@ -56,28 +56,28 @@ export default function Profile() {
       toast.error("Could not update the profile detail!")
     }
   }
-  useEffect(() => {
-    if (auth.currentUser) {
-      const adsRef = ref(db, `ads/`);
-      onValue(adsRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          const userListings = Object.values(data).filter((value) => {
+  // useEffect(() => {
+  //   if (auth.currentUser) {
+  //     const adsRef = ref(db, `ads/`);
+  //     onValue(adsRef, (snapshot) => {
+  //       const data = snapshot.val();
+  //       if (data) {
+  //         const userListings = Object.values(data).filter((value) => {
             
-            return value.ownerID === auth.currentUser.uid
-          }).sort((a, b) => {
-            return a.timestamp - b.timestamp;
-          })
+  //           return value.ownerID === auth.currentUser.uid
+  //         }).sort((a, b) => {
+  //           return a.timestamp - b.timestamp;
+  //         })
           
-          setListings(userListings);
-          setLoading(false);
-        } else {
-          setListings([]);
-          setLoading(false);
-        }
-      })
-    }
-  },[auth.currentUser,db])
+  //         setListings(userListings);
+  //         setLoading(false);
+  //       } else {
+  //         setListings([]);
+  //         setLoading(false);
+  //       }
+  //     })
+  //   }
+  // },[auth.currentUser,db])
   return (
     <>
       <section className='max-w-6xl mx-auto flex justify-center items-center flex-col'>

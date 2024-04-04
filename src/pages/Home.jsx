@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 export default function Home() {
-
+  const [loading, setLoading] = useState(true)
+  
   return (
     <>
-      <section className='relative w-full h-96  '>
+      <section className='relative w-full h-96 mb-10 '>
         <img src={require("../Assets/headerImage.jpg")} alt="headerImg"
-        className='absolute w-full h-96  object-cover brightness-75'/>
+        className='absolute w-full h-96  object-cover brightness-75' loading='lazy'/>
         
         <div className=' w-full h-full  flex flex-col items-center justify-evenly'>
           <div className='z-10 p-10'>
@@ -30,6 +31,12 @@ export default function Home() {
                   </button>
               </div>
           </form>
+        </div>
+      </section>
+      <section className='bg-red-200 w-100 h-60'>
+        <h1 className='font-bold text-shadow-lg'>New listings!</h1>
+        <div className=''>
+
         </div>
       </section>
     </>
