@@ -4,8 +4,9 @@ import { toast } from 'react-toastify';
 import { getStorage,ref, uploadBytesResumable,getDownloadURL  } from "firebase/storage";
 import { getAuth } from "firebase/auth"
 import { v4 as uuidv4 } from "uuid" 
-import { serverTimestamp } from "firebase/firestore"
-import { getDatabase, ref as databaseRef ,set  } from "firebase/database"
+import { Timestamp } from "firebase/firestore"
+
+import { getDatabase, ref as databaseRef ,set } from "firebase/database"
 import { Navigate, useNavigate } from 'react-router';
 export default function CreateListing() {
     const nav = useNavigate()
@@ -157,7 +158,7 @@ export default function CreateListing() {
             geolocation,
             ownerID: auth.currentUser.uid,
             id: adID,
-            timestamp: serverTimestamp()
+            timestamp: Timestamp.now()
         }
         delete formDataCopy.images;
         !formDataCopy.offer && delete formDataCopy.discountedPrice;

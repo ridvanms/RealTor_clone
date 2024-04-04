@@ -1,27 +1,30 @@
 import { useState, useEffect } from 'react';
-import { database, ref, onValue } from 'firebase/database';
-
-const useUserListings = (db, auth, isAuth, filter, limit) => {
+import { ref, onValue,getDatabase, serverTimestamp,orderByChild } from 'firebase/database';
+import { FieldValue, Timestamp } from "firebase/firestore"
+const useUserListings = (db, auth, filter, limit) => {
+ 
   const [listings, setListings] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    if (isAuth) {
       const adsRef = ref(db, 'ads/');
       onValue(adsRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
           let userListings = Object.values(data).filter((value) => {
-            if (value.hasOwnProperty('ownerID')) {
-              return value.ownerID === auth.currentUser.uid;
-            } else {
+            if (filter) {
+              if (filter === "ownerID") {
+                return value.ownerID === auth.currentUser.uid
+              }
+            }
+            else {
               return true;
             }
-          });
-          if (limit) {
-            userListings = userListings.slice(0, limit);
-          }
-          userListings.sort((a, b) => a.timestamp - b.timestamp);
+            
+          })
+          .slice(0, limit || Infinity)
+            .sort((a, b) => {
+            return b.timestamp.seconds - a.timestamp.seconds
+          })
           setListings(userListings);
           setLoading(false);
         } else {
@@ -29,10 +32,7 @@ const useUserListings = (db, auth, isAuth, filter, limit) => {
           setLoading(false);
         }
       });
-    } else {
-      setLoading(false);
-    }
-  }, [db, auth, isAuth, filter, limit]);
+  }, [db, auth, filter, limit]);
 
   return { listings, loading };
 }

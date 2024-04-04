@@ -1,7 +1,14 @@
 import React, { useState } from 'react'
+import useUserListings from '../hooks/useUserListings'
+import { getDatabase } from 'firebase/database'
+import { getAuth } from 'firebase/auth'
+import ListingItem from '../components/ListingItem';
+
 
 export default function Home() {
-  const [loading, setLoading] = useState(true)
+  const db = getDatabase();
+  const auth = getAuth();
+  const {listings,loading} = useUserListings(db,auth,null,10)
   
   return (
     <>
@@ -36,7 +43,7 @@ export default function Home() {
       <section className='bg-red-200 w-100 h-60'>
         <h1 className='font-bold text-shadow-lg'>New listings!</h1>
         <div className=''>
-
+          
         </div>
       </section>
     </>

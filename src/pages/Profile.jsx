@@ -2,7 +2,7 @@ import { getAuth, updateProfile } from 'firebase/auth'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
-import { getDatabase,ref,update,onValue } from 'firebase/database';
+import { getDatabase,ref,update } from 'firebase/database';
 import { FcHome } from "react-icons/fc";
 import ListingItem from '../components/ListingItem';
 import useUserListings from '../hooks/useUserListings';
@@ -13,7 +13,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const [changeDetail, setChangeDetail] = useState(false)
   const { listings, loading } = useUserListings(db,auth,"ownerID")
-  console.log(listings)
+  // console.log(listings)
   const [formData, setFormData] = useState({
     name: auth?.currentUser?.displayName,
     email: auth?.currentUser?.email,
