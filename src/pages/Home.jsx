@@ -40,12 +40,12 @@ export default function Home() {
           </form>
         </div>
       </section>
-      <section className='bg-red-200 w-100 h-60'>
+      {/* <section className='bg-red-200 w-100 h-60'>
         <h1 className='font-bold text-shadow-lg'>New listings!</h1>
         <div className=''>
           
         </div>
-      </section>
+      </section> */}
     </>
     
   )
