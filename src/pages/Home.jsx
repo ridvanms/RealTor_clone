@@ -40,12 +40,25 @@ export default function Home() {
           </form>
         </div>
       </section>
-      {/* <section className='bg-red-200 w-100 h-60'>
-        <h1 className='font-bold text-shadow-lg'>New listings!</h1>
-        <div className=''>
-          
+      <section className=' flex flex-col  w-100 h-96
+      overflow-x-auto overflow-y-hidden'>
+        <h1 className='font-semibold uppercase font-sans text-shadow-lg ml-5
+        sticky left-5 text-lg '>New listings</h1>
+        <div className='flex flex-nowrap w-max'>
+        
+          {!loading && listings.length > 0 && (
+            <>
+              {listings.map((listing) =>
+                <ListingItem
+                  key={listing.id}
+                  id={listing.id}
+                  listing={listing}
+
+                />)}
+            </>
+          )}
         </div>
-      </section> */}
+      </section> 
       
     </>
       
@@ -63,5 +76,5 @@ export default function Home() {
             <span className="sr-only">Search</span>
         </button>
     </div>
-</form> */}      
-      
+  </form> */}      
+                

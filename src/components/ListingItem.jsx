@@ -5,7 +5,7 @@ import { IoLocation } from "react-icons/io5";
 import { Timestamp } from "firebase/firestore"
 export default function ListingItem({ listing, id }) {
   const currentTimestamp = Math.floor(Date.now() / 1000);
-  const timestampDifference = currentTimestamp - listing.timestamp.seconds;
+  const timestampDifference = currentTimestamp - listing?.timestamp?.seconds;
 
   let timeAgo;
   if (timestampDifference < 60) {
@@ -30,8 +30,8 @@ export default function ListingItem({ listing, id }) {
     <li className='relative bg-white flex flex-col justify-between items-center
     shadow-md hover:shadow-xl rounded-md overflow-hidden transition-shadow
     duration-150 m-[10px]'>
-      <Link className='contents' to={`/catagory/${listing.type}/${id}`}>
-        <img src={listing.imgUrls[0]} alt="ListingImg"
+      <Link className='contents' to={`/catagory/${listing?.type}/${id}`}>
+        <img src={listing?.imgUrls[0]} alt="ListingImg"
           className='h-[170px] w-full object-cover hover:scale-105 transition-scale
           duration-200 ease-in' loading='lazy'/>
         <h2  className='absolute top-2 left-2 bg-[#3377cc]
@@ -44,13 +44,13 @@ export default function ListingItem({ listing, id }) {
           </div>
           <p className="font-semibold  text-xl truncate ">{listing.name}</p>
           <p className="text-[#457b9d] mt-2 font-semibold">
-            ${listing.offer ? listing.discountedPrice
+            ${listing?.offer ? listing?.discountedPrice
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",") 
-              : listing.regularPrice
+              : listing?.regularPrice
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            {listing.type === "rent" && " / month"}
+            {listing?.type === "rent" && " / month"}
           </p>
           <div className="flex items-center mt-[10px] space-x-3">
             <div className="flex items-center space-x-1">
