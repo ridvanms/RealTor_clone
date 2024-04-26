@@ -150,7 +150,7 @@ export default function CreateListing() {
                     toast.error("Image not uploaded")
                     return ;
                 })
-        console.log(imgUrls)
+        // console.log(imgUrls)
         const adID = uuidv4(6);
         const formDataCopy = { 
             ...formData,

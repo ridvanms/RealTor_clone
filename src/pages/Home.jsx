@@ -8,8 +8,8 @@ import ListingItem from '../components/ListingItem';
 export default function Home() {
   const db = getDatabase();
   const auth = getAuth();
-  const {listings,loading} = useUserListings(db,auth,null,10)
-  
+  const {listings , loading} = useUserListings(db,auth,null,10)
+  const offerListings = useUserListings(db,auth,"offer",10)
   return (
     <>
       <section className='relative w-full h-96 mb-10 '>
@@ -17,7 +17,7 @@ export default function Home() {
         className='absolute w-full h-96  object-cover brightness-75' loading='lazy'/>
         
         <div className=' w-full h-full  flex flex-col items-center justify-evenly'>
-          <div className='z-10 pt-10 font-mono '>
+          <div className='z-10 pt-10 font-mono'>
             <h1 className='  z-10 text-black  font-extrabold text-2xl sm:text-4xl  md:text-6xl
               dark:text-stone-200 '>The site for real estate </h1>
             <h1 className='ml-10 z-10  text-black font-extrabold text-2xl sm:text-4xl md:text-6xl
@@ -40,15 +40,34 @@ export default function Home() {
           </form>
         </div>
       </section>
-      <section className=' flex flex-col  w-100 h-96
+      <section className=' flex flex-col  w-full h-96
       overflow-x-auto overflow-y-hidden'>
         <h1 className='font-semibold uppercase font-sans text-shadow-lg ml-5
         sticky left-5 text-lg '>New listings</h1>
         <div className='flex flex-nowrap w-max'>
         
-          {!loading && listings.length > 0 && (
+          {!loading &&  listings.length > 0 && (
             <>
               {listings.map((listing) =>
+                <ListingItem
+                  key={listing.id}
+                  id={listing.id}
+                  listing={listing}
+
+                />)}
+            </>
+          )}
+        </div>
+      </section> 
+      <section className='mt-10 flex flex-col  w-full h-96
+      overflow-x-auto overflow-y-hidden'>
+        <h1 className='font-semibold uppercase font-sans text-shadow-lg ml-5
+        sticky left-5 text-lg '>TOP 10 Offers</h1>
+        <div className='flex flex-nowrap w-max'>
+        
+          {!offerListings.loading && offerListings.listings.length > 0 && (
+            <>
+              {offerListings.listings.map((listing) =>
                 <ListingItem
                   key={listing.id}
                   id={listing.id}

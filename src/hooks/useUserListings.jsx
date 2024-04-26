@@ -14,6 +14,8 @@ const useUserListings = (db, auth, filter, limit) => {
             if (filter) {
               if (filter === "ownerID") {
                 return value.ownerID === auth.currentUser.uid
+              } else if (filter === "offer") {
+                return value.offer
               }
             }
             else {
